@@ -1,7 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
 import mongoose from "mongoose";
 
-import Topic from "./Models/Topic.js";
+import Question from "./Models/Question.js";
 
 mongoose
   .connect("mongodb://database:27017/test", {
@@ -17,7 +17,7 @@ const typeDefs = gql`
     email: String
   }
 
-  type Topic {
+  type Question {
     content: String
     author: User
   }
@@ -26,30 +26,30 @@ const typeDefs = gql`
     email: String
   }
 
-  input InputTopic {
+  input InputQuestion {
     content: String
     author: InputUser
   }
 
   type Query {
-    topics: [Topic]
+    questions: [Question]
   }
   type Mutation {
-    addTopic(input: InputTopic): Topic
+    addQuestion(input: InputQuestion): Question
   }
 `;
 
 const resolvers = {
   Query: {
-    async topics() {
-      return await Topic.find();
+    async questions() {
+      return await Question.find();
     },
   },
   Mutation: {
-    async addTopic(parent, args) {
-      console.log("args", args.input);
-      const createdTopic = await Topic.create(args.input);
-      return createdTopic;
+    async addQuestion(parent, args) {
+      const createdQuestion = await Question.create(args.input);
+      console.log("createdQuestion", createdQuestion);
+      return createdQuestion;
     },
   },
 };

@@ -1,7 +1,7 @@
 import { ApolloServer, gql } from "apollo-server";
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
 
-import Question from "./Models/Question.js";
+import Question from "./Models/Question";
 
 mongoose
   .connect("mongodb://database:27017/test", {
@@ -32,7 +32,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    questions: [Question]
+    getAllQuestions: [Question]
+    getQuestionById(id: String): Question
   }
   type Mutation {
     addQuestion(input: InputQuestion): Question
@@ -41,8 +42,11 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    async questions() {
+    async getAllQuestions() {
       return await Question.find();
+    },
+    async getQuestionById(_, args) {
+      return await Question.findById(args.id);
     },
   },
   Mutation: {

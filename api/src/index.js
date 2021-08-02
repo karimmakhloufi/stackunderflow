@@ -1,4 +1,16 @@
-const { ApolloServer, gql } = require("apollo-server");
+import { ApolloServer, gql } from "apollo-server";
+import mongoose from "mongoose";
+
+import Topic from "./Models/Topic.js";
+
+mongoose
+  .connect("mongodb://database:27017/test", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("connected to db");
+  });
 
 const typeDefs = gql`
   type User {
@@ -10,23 +22,34 @@ const typeDefs = gql`
     author: User
   }
 
+  input InputUser {
+    email: String
+  }
+
+  input InputTopic {
+    content: String
+    author: InputUser
+  }
+
   type Query {
     topics: [Topic]
   }
   type Mutation {
-    addTopic: [Topic]
+    addTopic(input: InputTopic): Topic
   }
 `;
 
 const resolvers = {
   Query: {
-    topics() {
-      return topics;
+    async topics() {
+      return await Topic.find();
     },
   },
   Mutation: {
-    addTopic(parent, args) {
-      return "okay";
+    async addTopic(parent, args) {
+      console.log("args", args.input);
+      const createdTopic = await Topic.create(args.input);
+      return createdTopic;
     },
   },
 };

@@ -14,10 +14,12 @@ mongoose
 
 const typeDefs = gql`
   type User {
+    id: ID
     email: String
   }
 
   type Question {
+    id: ID
     content: String
     author: User
   }

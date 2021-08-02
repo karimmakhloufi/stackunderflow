@@ -18,14 +18,27 @@ const typeDefs = gql`
     email: String
   }
 
-  type Question {
+  input InputUser {
+    email: String
+  }
+
+  type Answer {
     id: ID
     content: String
     author: User
   }
 
-  input InputUser {
-    email: String
+  input InputAnswer {
+    question: ID
+    content: String
+    author: InputUser
+  }
+
+  type Question {
+    id: ID
+    content: String
+    author: User
+    answers: [Answer]
   }
 
   input InputQuestion {
@@ -39,6 +52,7 @@ const typeDefs = gql`
   }
   type Mutation {
     addQuestion(input: InputQuestion): Question
+    addAnswer(input: InputAnswer): Question
   }
 `;
 
@@ -56,6 +70,12 @@ const resolvers = {
       const createdQuestion = await Question.create(args.input);
       console.log("createdQuestion", createdQuestion);
       return createdQuestion;
+    },
+    async addAnswer(_, { input: { question, content, author } }) {
+      const questionFromDB = await Question.findById(question);
+      console.log("question from db", questionFromDB);
+      questionFromDB.answers.push({ content, author });
+      return await questionFromDB.save();
     },
   },
 };

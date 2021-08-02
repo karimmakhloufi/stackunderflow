@@ -7,3 +7,5 @@ services:
       - ./api/src:/app/src
   database:
     image: mongo
+    logging:
+      driver: none

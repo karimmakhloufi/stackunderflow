@@ -1,11 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const AnswerSchema = new Schema({
-  content: String,
-  author: {
-    email: String,
-  },
-});
+import AnswerSchema from "./AnswerSchema";
 
 const QuestionSchema = new Schema({
   content: String,
